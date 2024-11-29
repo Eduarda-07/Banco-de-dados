@@ -1,0 +1,215 @@
+
+create table tb_fornecedor (
+	id_fornecedor int primary key auto_increment,
+	telefone varchar (20) not null,
+	endereco varchar (50) not null,
+	email varchar (100)not null
+);
+alter table tb_fornecedor add column nome varchar(50) not null;
+
+create table tb_marca (
+	id_marca int primary key auto_increment,
+	nome varchar (20)
+);
+
+create table tb_produto (
+	id_produto int primary key auto_increment,
+	nome varchar (50) not null,
+	estoque int not null,
+	id_marca int not null,
+	id_fornecedor int not null,
+	foreign key (id_marca) references tb_marca (id_marca),
+	foreign key (id_fornecedor) references tb_fornecedor (id_fornecedor)
+);
+alter table tb_produto add column cor varchar(20) not null;
+
+create table tb_endereco (
+	id_endereco int primary key auto_increment,
+	logradouro varchar (50) not null,
+	bairro varchar (20) not null,
+	cidade varchar (20)not null,
+	numero varchar (10) not null,
+	complemento varchar (20),
+	cep varchar (10) not null,
+	id_cliente int not null,
+	foreign key (id_cliente) references tb_cliente (id_cliente)
+);
+
+create table tb_cliente (
+	id_cliente int primary key auto_increment,
+	nome varchar (50) not null,
+	telefone varchar (20) not null,
+	email varchar (100)not null,
+	cpf varchar (15) not null
+);
+
+create table tb_vendedor (
+	id_vendedor int primary key auto_increment,
+	nome varchar (50) not null,
+	telefone varchar (20) not null,
+	email varchar (100)not null,
+	cpf varchar (15) not null,
+	comissão int not null
+);
+alter table tb_vendedor change comissão comissao int not null;
+
+create table tb_pedido (
+	id_pedido int primary key auto_increment,
+	data_pedido date not null,
+	preco_total decimal (10,2) not null,
+	id_cliente int not null,
+	id_vendedor int not null,
+	foreign key (id_cliente) references tb_cliente (id_cliente),
+	foreign key (id_vendedor) references tb_vendedor (id_vendedor)
+);
+
+create table tb_forma_pagamento (
+	id_forma_pagamento int primary key auto_increment,
+	descricao varchar (10) not null
+);
+
+create table tb_pedido_pagamento (
+	id_pedido_pagamento int primary key auto_increment,
+	id_pedido int not null,
+	id_forma_pagamento int not null
+);
+
+create table tb_produto_pedido (
+	id_produto_pedido int primary key auto_increment,
+	quantidade int not null,
+	preco_unidade decimal (10,2) not null,
+	id_produto int not null,
+	id_pedido int not null, 
+	foreign key (id_produto) references tb_produto (id_produto),
+	foreign key (id_pedido) references tb_pedido (id_pedido)
+);
+
+/* registros nas entidades */
+
+INSERT INTO tb_fornecedor (
+	telefone, 
+	endereco, 
+	email, 
+	nome)
+	
+VALUES
+  ('(11) 98765-4321', 'Avenida das Lentes, 123', 'lentesdobrasil@email.com', 'Olhar do Sol'),
+  ('(11) 91234-5678', 'Rua dos Estilos, 456', 'modaocular@email.com', 'Visão Urbana'),
+  ('(11) 95791-2468', 'Praça da Visibilidade, 789', 'solarpower@email.com', 'Solaris Eyewear');
+
+
+INSERT INTO tb_marca (
+	nome
+)
+VALUES
+  ('Ray-Ban'),
+  ('Oakley'),
+  ('Prada');
+  
+  
+INSERT INTO tb_produto (
+nome, 
+estoque, 
+id_marca, 
+id_fornecedor)
+
+VALUES
+  ('Aviador Ray-Ban', 50, 1, 1, 'Preto'),
+  ('Wayfarer Ray-Ban', 30, 1, 1, 'Preto'),
+  ('Clubmaster Ray-Ban', 20, 1, 1, 'Preto'),
+  ('Oakley Frogskins', 40, 2, 2, 'Marrom'),
+  ('Oakley Holbrook', 35, 2, 2, 'Preto'),
+  ('Oakley Radar', 25, 2, 2, 'Vermelho'),
+  ('Prada Linea Rossa', 55, 3, 3, 'Roxo'),
+  ('Prada Baroque', 45, 3, 3, 'Rose'),
+  ('Prada Sport', 35, 3, 3, 'Preto');
+
+update tb_produto set cor = 'Preto'  where id_produto = 1;
+update tb_produto set cor = 'Preto'  where id_produto = 2;
+update tb_produto set cor = 'Preto'  where id_produto = 3;
+update tb_produto set cor = 'Marrom'  where id_produto = 4;
+update tb_produto set cor = 'Preto'  where id_produto = 5;
+update tb_produto set cor = 'Vermelho'  where id_produto = 6;
+update tb_produto set cor = 'Roxo'  where id_produto = 7;
+update tb_produto set cor = 'Rose'  where id_produto = 8;
+update tb_produto set cor = 'Preto'  where id_produto = 9;
+
+INSERT INTO tb_cliente(
+nome, 
+telefone, 
+email, 
+cpf)
+
+VALUES
+  ('Isabelly Lima', '(11) 91975-3567', 'isa.lima@email.com', '123.456.789-10'),
+  ('Leticia Souza', '(11) 94321-8765', 'lele.souza@email.com', '234.567.890-11'),
+  ('Laura Sofia', '(11) 95948-2468', 'laurinha.sofia@email.com', '345.678.901-12'),
+  ('Giovanna Coelho', '(11) 99267-9876', 'gio.coelho@email.com', '456.789.012-13');
+
+
+INSERT INTO tb_endereco(
+logradouro, 
+bairro, 
+cidade, 
+numero, 
+complemento, 
+cep, 
+id_cliente)
+
+VALUES
+  ('Rua dos Girassóis', 'Jardim das Flores', 'São Paulo', '123', 'Apartamento 201', '01234-567', 1),
+  ('Avenida das Estrelas', 'Vila Cosmos', 'Craícuíba', '456', '', '23456-789', 2),
+  ('Rua da Lua', 'Bairro da Estrela', 'Jandira', '789', 'Casa', '34567-890', 3),
+  ('Praça do Sol', 'Centro', 'Barueri', '100', 'Loja 1', '45678-901', 4);
+  
+INSERT INTO tb_vendedor(
+nome, 
+telefone, 
+email, 
+cpf, 
+comissao)
+
+VALUES
+  ('Gabriel Soares', '(11) 91313-1313', 'biel.soares@email.com', '111.222.333-13', 10),
+  ('Eduarda de Jesus', '(11) 92020-2020', 'duda.jesus@email.com', '333.222.111-20', 15),
+  ('Jheniffer Rodrigues', '(11) 92727-2727', 'jhe.rodrigues@email.com', '666.555.444-27', 8),
+  ('Gabriel Guedes', '(11) 98888-8888', 'gabriel.guedes@email.com', '888.777.999-88', 12); 
+
+
+INSERT INTO tb_pedido(
+data_pedido, 
+preco_total, 
+id_cliente, 
+id_vendedor)
+
+VALUES
+  ('2023-11-20', 600.00, 1, 1),
+  ('2023-01-01', 800.50, 2, 2),
+  ('2024-07-18', 700.00, 3, 3),
+  ('2024-08-23', 750.25, 4, 4),
+  ('2023-03-30', 640.75, 1, 2),
+  ('2023-10-14', 820.00, 3, 3),
+  ('2024-12-19', 2525.50, 2, 4),
+  ('2024-05-28', 1850.25, 4, 3);
+  
+
+INSERT INTO tb_produto_pedido(
+quantidade, 
+preco_unidade, 
+id_produto, 
+id_pedido)
+
+VALUES
+  (2, 600.00, 1, 1),  
+  (1, 800.50, 2, 1),  
+  (3, 700.00, 3, 2), 
+  (2, 750.25, 4, 2),  
+  (1, 640.75, 5, 3), 
+  (4, 820.00, 6, 3), 
+  (2, 2525.50, 7, 4),  
+  (1, 1850.25, 8, 4);  
+
+
+
+
+
